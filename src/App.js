@@ -1,25 +1,41 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react';
+import './App.scss';
+import Tasks from './components/Tasks';
+import TodoList from './components/TodoList';
 
-function App() {
+const App = () => {
+  const [inputText, setInputText] = useState('');
+  const [todos, setTodos] = useState([]);
+  useEffect(() => {
+    getLocalTodos();
+  }, []);
+  useEffect(() => {
+    saveLocalTodos();
+  }, [todos]);
+
+  const saveLocalTodos = () => localStorage.setItem('todos', JSON.stringify(todos));
+  const getLocalTodos = () => {
+    if (localStorage.getItem('todos') === null) {
+      localStorage.setItem('todos', JSON.stringify([]));
+    } else {
+      let todoLocal = JSON.parse(localStorage.getItem('todos', JSON.stringify(todos)));
+      setTodos(todoLocal);
+    }
+  };
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="todo">
+      <h1 className="todo__title">TODO LIST</h1>
+      <div className="todo__tasks">
+        <Tasks
+          inputText={inputText}
+          todos={todos}
+          setTodos={setTodos}
+          setInputText={setInputText}
+        />
+      </div>
+      <TodoList setTodos={setTodos} todos={todos} />
     </div>
   );
-}
+};
 
 export default App;
